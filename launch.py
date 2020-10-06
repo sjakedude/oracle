@@ -1,6 +1,11 @@
 import RPi.GPIO as GPIO
 from time import sleep
 import random
+from pygame import mixer
+
+mixer.init()
+mixer.music.load('/home/pi/Desktop/song.mp3')
+mixer.music.play()
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
@@ -43,8 +48,10 @@ def flashing():
 
 def displayAnswer(num):
     if num is 0:
+        mixer.Channel(1).play(mixer.Sound('/home/pi/Desktop/Noooo.wav'))
         GPIO.output(40, GPIO.HIGH)
     else:
+        mixer.Channel(0).play(mixer.Sound('/home/pi/Desktop/Yeah.wav'))
         GPIO.output(38, GPIO.HIGH)
 
 def calculate():
@@ -58,12 +65,16 @@ while True:
         GPIO.output(38, GPIO.LOW)
         GPIO.output(40, GPIO.LOW)
         if GPIO.input(10) == GPIO.HIGH:
+            mixer.music.pause()
             GPIO.output(8, GPIO.LOW)
-            sleep(2)
+            sleep(1)
+            mixer.Channel(0).play(mixer.Sound('/home/pi/Desktop/Uhhhh.wav'))
             calculate()
             sleep(5)
+            mixer.music.unpause()
     finally:
         GPIO.output(8, GPIO.LOW)
         GPIO.output(38, GPIO.LOW)
         GPIO.output(40, GPIO.LOW)
+
 
